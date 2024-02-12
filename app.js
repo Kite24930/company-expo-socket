@@ -9,7 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const io = new Server(443, {
+const io = new Server(3030, {
     cors: [{
         origin: "http://localhost",
         methods: ["GET", "POST"]
