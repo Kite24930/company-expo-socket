@@ -60,4 +60,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+var http = require('http').Server(app);
+const PORT = process.env.PORT || 50000;
+
+http.listen(PORT, () => {
+    console.log(`listening on *:${PORT}`);
+});
+
 module.exports = app;
