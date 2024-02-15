@@ -1,4 +1,3 @@
-const { Server } = require("socket.io");
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,27 +8,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const io = new Server(3030, {
-    cors: [{
-        origin: "http://localhost",
-        methods: ["GET", "POST"]
-    },
-    {
-        origin: "https://company-expo.com",
-        methods: ["GET", "POST"]
-    }]
-});
-
-io.on('connection', (socket) => {
-  console.log(socket.id);
-  socket.on('link', (obj) => {
-      console.log(obj);
-      socket.emit('linkTo' + obj.id, 'Admission granted');
-  });
-  socket.on('disconnect', () => {
-      console.log('user disconnected');
-  });
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -61,7 +39,28 @@ app.use(function(err, req, res, next) {
 });
 
 var http = require('http').Server(app);
-const PORT = process.env.PORT || 50000;
+const io = require('socket.io')(http);
+// (3030, {
+//     cors: [{
+//         origin: "http://localhost",
+//         methods: ["GET", "POST"]
+//     },
+//         {
+//             origin: "https://company-expo.com",
+//             methods: ["GET", "POST"]
+//         }]
+// });
+const PORT = process.env.PORT || 3030;
+io.on('connection', (socket) => {
+    console.log(socket.id);
+    socket.on('link', (obj) => {
+        console.log(obj);
+        socket.emit('linkTo' + obj.id, 'Admission granted');
+    });
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
 
 http.listen(PORT, () => {
     console.log(`listening on *:${PORT}`);
