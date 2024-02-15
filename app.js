@@ -39,7 +39,16 @@ app.use(function(err, req, res, next) {
 });
 
 var http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+    cors: [{
+        origin: "http://localhost",
+        methods: ["GET", "POST"]
+    },
+    {
+        origin: "https://company-expo.com",
+        methods: ["GET", "POST"]
+    }]
+});
 // (3030, {
 //     cors: [{
 //         origin: "http://localhost",
