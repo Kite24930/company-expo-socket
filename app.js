@@ -60,14 +60,26 @@ const io = require('socket.io')(http, {
 //         }]
 // });
 const PORT = process.env.PORT || 3030;
+
+let userSockets = {};
 io.on('connection', (socket) => {
     console.log(socket.id);
+    socket.on('register', (userId) => {
+        userSockets[userId] = socket.id;
+        console.log(userSockets);
+    });
     socket.on('link', (obj) => {
         console.log(obj);
-        socket.emit('linkTo' + obj.id, 'Admission granted');
+        let targetSocket = userSockets[obj.id];
+        io.to(targetSocket).emit('linkTo' + obj.id, 'Admission granted');
     });
     socket.on('disconnect', () => {
         console.log('user disconnected');
+        Object.keys(userSockets).forEach((key) => {
+            if (userSockets[key] === socket.id) {
+                delete userSockets[key];
+            }
+        });
     });
 });
 
